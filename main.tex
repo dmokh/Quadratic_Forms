@@ -13,8 +13,9 @@
 \usepackage[right=50px, left=50px]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage[dvipsnames]{xcolor}
+\definecolor{backblue}{RGB}{200, 250, 255}
 \definecolor{lightblue}{RGB}{0, 191, 255}
-\definecolor{lightgreen}{RGB}{255, 250, 235}
+\definecolor{lightgreen}{RGB}{245, 255, 245}
 \definecolor{enumcolor}{RGB}{198, 166, 100}
 \newenvironment{Graph}
 {\captionsetup{type=figure}
@@ -54,6 +55,16 @@
 \mbox{}
 }
 
+\tcolorboxenvironment{definition}{
+  colback=backblue,
+  colframe=blue,
+  arc=4pt,
+  boxsep=0pt,
+  breakable,
+  pad at break=1mm,
+  break at=-\baselineskip/0pt
+}
+
 \newenvironment{proof}[1] {
 \noindent\emph{(!) #1} \\ \textbf{Док-во: \\}
 }
@@ -64,7 +75,7 @@
 }
 
 \tcolorboxenvironment{proof}{
-  colback=white,
+  colback=backblue,
   colframe=lightblue,
   arc=4pt,
   breakable,
