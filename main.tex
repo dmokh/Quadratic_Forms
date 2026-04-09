@@ -1,0 +1,1052 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx, caption}
+
+\usepackage{array, longtable}
+\usepackage{environ}
+\usepackage{lipsum}
+
+\usepackage[T2A]{fontenc}
+\usepackage[english, russian]{babel}
+\usepackage[]{indentfirst}
+\usepackage[right=50px, left=50px]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{lightblue}{RGB}{0, 191, 255}
+\definecolor{lightgreen}{RGB}{255, 250, 235}
+\definecolor{enumcolor}{RGB}{198, 166, 100}
+\newenvironment{Graph}
+{\captionsetup{type=figure}
+}
+{}
+\usepackage[most]{tcolorbox}
+
+\tcolorboxenvironment{Graph}{
+  center,
+  halign=center,
+  colback=lightgreen,
+  colframe=green!70!black,
+  arc=4pt,
+}
+
+\tcolorboxenvironment{enumerate}{
+  leftrule=6px,
+  colback=white,
+  colframe=enumcolor,
+  fonttitle=\bfseries,
+  arc=4pt,
+  breakable,
+  pad at break=1mm,
+  break at=-\baselineskip/0pt
+}
+
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=black, linktocpage}
+\title{Арифметика и комбинаторика квадратичных форм с единичной главной диагональю}
+\author{Моховиков Денис Олегович \\
+        Научный руководитель: Антипов Михаил Александрович}
+\date{}
+
+\newenvironment{definition}[0] {
+\textbf{\textsc{Определение:}}
+}
+{
+\mbox{}
+}
+
+\newenvironment{proof}[1] {
+\noindent\emph{(!) #1} \\ \textbf{Док-во: \\}
+}
+{
+\begin{center}
+\textbf{Ч. Т. Д.}
+\end{center}
+}
+
+\tcolorboxenvironment{proof}{
+  colback=white,
+  colframe=lightblue,
+  arc=4pt,
+  breakable,
+  pad at break=1mm,
+  break at=-\baselineskip/0pt
+}
+
+
+\newenvironment{lemma}[1] {
+\textbf{\textsc{Лемма}. (!) #1 \\  Док-во: \\}
+}
+{
+\begin{center}
+\textbf{Ч. Т. Д.}
+\end{center}
+}
+
+\tcolorboxenvironment{lemma}{
+  colback=white,
+  colframe=blue,
+  arc=4pt,
+  breakable,
+  pad at break=1mm,
+  break at=-\baselineskip/0pt
+}
+
+
+\def\letus{%
+\mathord{\setbox0=\hbox{$\exists$}%
+         \hbox{\kern 0.125\wd0%
+               \vbox to \ht0{%
+                  \hrule width 0.75\wd0%
+                  \vfill%
+                  \hrule width 0.75\wd0}%
+               \vrule height \ht0%
+               \kern 0.125\wd0}%
+       }%
+}
+\DeclareMathOperator{\rank}{rank}
+\makeatletter
+\newenvironment{sqcases}{%
+  \matrix@check\sqcases\env@sqcases
+}{%
+  \endarray\right.%
+}
+\def\env@sqcases{%
+  \let\@ifnextchar\new@ifnextchar
+  \left\lbrack
+  \def\arraystretch{1.2}%
+  \array{@{}l@{\quad}l@{}}%
+}
+\makeatother
+
+
+\begin{document}
+    \maketitle{}
+    \pagebreak
+    
+    \tableofcontents{}
+    \pagebreak
+
+    \section{\textsc{Постановка задачи}}
+    
+    \begin{definition}
+        Функция называется \textit{\textbf{квадратичной формой}}, если её можно представить в виде:
+        \begin{gather*}    
+         f(x) = \sum_{i,j=1}^n a_{ij} x_ix_j, \text{ } (x)-\text{последовательность вещественных чисел, } \\a_{ij} - \text{матрица вещественных чисел}
+         \end{gather*}
+    \end{definition}
+    \begin{definition}
+        Квадратичная форма называется \textit{\textbf{квадратичной формой с единичной главной диагональю}}, если верно, что: 
+        \(a_{ij} \in \mathbb{Z} \) и \(\forall i \leq n : a_{ii} = 1 \) \\
+        Тогда выражение, задающее рассматриваемую функцию:
+        \begin{gather*} f(x) = \sum_{i=1}^{n} x_i^2 - \sum_{i,j=1}^n x_i x_ja_{ij}\end{gather*}
+    \end{definition}
+    
+    \begin{definition}
+        Квадратичная форма называется \textit{\textbf{положительно определенной}}, если верно, что: 
+        \begin{gather*} \forall \text{ } (x_i) \in \mathbb{R} : f(x) > 0\end{gather*}
+    \end{definition}
+    
+    \begin{definition}
+        Квадратичная форма называется \textit{\textbf{неотрицательно определенной}}, если верно, что: 
+        \begin{gather*} \forall \text{ } (x_i) \in \mathbb{R} : f(x) \geq 0\end{gather*}
+    \end{definition}
+    
+    \begin{definition}
+        Квадратичная форма называется \textit{\textbf{слабоположительной}}, если верно, что:
+        \begin{gather*} \forall \text{ } (x_i) \in \mathbb{N}_{ \{0\} } : f(x) = a, a > 0\end{gather*}
+    \end{definition}
+    
+    \begin{definition}
+        Графом решений называется пара (V, E), где V - множество элементов, вида \( (x_i) \in \mathbb{R} \), E - множество пар элементов таких, что: \begin{gather*}\forall \text{ } ((a_1), (a_2)) \in E : (a_1), (a_2) \in V  \text{ и }  \exists \text{ }  ! i : a_{1_i} \neq a_{2_i} \end{gather*}
+    \end{definition}
+    
+    
+    \textbf{Цель:} Частично классифицировать множество квадратичных форм с единичной главной диагональю и выяснить как выглядят некоторые виды их графов решений.
+    
+    \pagebreak
+
+    \section{\textsc{Актуальность}}
+        В работе делается упор на описание комбинаторной структуры решений Диофантова (квадратичного) уравнения, что является текущим трендом в актуальных исследованиях, связывающих теорию чисел с комбинаторной динамикой.
+    
+    \subsection{\large{Обзор существующих решений}}
+        В популярной литературе описания результатов отсутствует, однако из
+        работ по теории представлений можно получить описание ``на принципиальном уровне`` в случае положительно определенных форм. В данной работе  графы решений представлены явно, в том числе в некоторых ``неклассических`` полуопределенных случаях.
+        
+    \section{\textsc{План выполнения}}
+    \begin{enumerate}
+        \large\item Классификация положительных форм
+        \large\item Классификация неотрицательных форм
+        \large\item Графы решений положительных форм
+        \large\item Графы решений неотрицательных форм
+    \end{enumerate}
+    \pagebreak
+    
+    
+    
+    \section{\textsc{Классификация положительных форм}}
+    Шаги решения:
+    \begin{enumerate} 
+        \item Представление \( (x_i) \) как графа
+        \item Рассмотрение каждой компоненты графа по отдельности
+        \item Компонента является деревом
+        \item Степень вершин \( \leq \) 3
+        \item Вершин степени 3 не больше одной
+        \item Один из ``отростков`` графа имеет длину 1
+        \item Один из оставшихся ``отростков`` имеет длину \(\leq\) 3
+        \item Получение ответа
+    \end{enumerate}
+
+    
+    \subsection{\large{Представление как графа}}
+        \begin{proof}{\(\forall \text{ } i, j \leq n : a_i + a_j \leq 1\)} 
+            От противного. \\
+            $\letus$ \(a_i + a_j > 1\), тогда рассмотрим пример:
+            \begin{Graph}
+                \includegraphics[height=30px]{ext/3.1.png}
+                \caption{Здесь, \(x_i = 1, x_j = 1\), остальные 0.}
+            \end{Graph}
+            \begin{gather*}
+            f(x) = 1^2 + 1^2 - (a_i + a_j) > 0 \Rightarrow 2 > (a_i + a_j). ?!?
+            \end{gather*}
+        \end{proof}
+         Соответственно, строим граф на вершинах \((x_i)\) и двусторонних рёбрах.
+    \subsection[\large{Рассмотрение компонент связности по отдельности}]{
+    \large{Рассмотрение компонент связности по отдельности}\hypertarget{Component}{}
+    }
+        \begin{proof}{Каждую компоненту необходимо и достаточно рассматривать по отдельности} 
+            Обозначим компоненту за C. \\
+            Необходимость: $\letus$  $\forall \text{ } x_i \notin C , x_i = 0$.
+            В таком случае, если для компоненты не выполняется то и для всего графа не выполняется. \\
+            Обозначим количество компонент за c. \\
+            Достаточность: Если выполняется для всех c компонент, то можем записать:
+            \begin{gather*}
+            \forall \text{ } i \leq c : f_i(x) > 0 \Rightarrow f(x) = \sum_{i=1}^c f_i(x) > 0
+            \end{gather*}
+        \end{proof}
+        Также заметим, что в дальнейшем будут доказаны невыполнения условий для некоторых примеров, и этого будет достаточно, по причине того, что мы можем, аналогично этому доказательству, занулить вершины графа так, что останется подграф, необходимый нам, и случай невыполнения условия для него будет равносилен случаю невыполнения условия для всего графа. 
+    \subsection{\large{Компонента является деревом}}
+        \begin{proof}{Компонента графа является деревом} 
+            Обозначим компоненту за C. \\
+            Хотим доказать что C не содержит циклов.\\
+            От противного:
+            $
+            \letus \text{ } \exists \text{ } (i_k) \subset C : \forall \text{ } 1 \leq r \leq k : (x_{i_r}, x_{i_{r+1}}) \in V \text{ и } (x_{i_k}, x_{i_1}) \in V.
+            $\\
+            Тогда, рассмотрим пример:
+            \begin{Graph}
+                \includegraphics[height=60px]{ext/3.3.png} \\
+                \caption{Здесь, $\forall \text{ } 1 \leq i \leq n : x_i = 1$}
+            \end{Graph}
+            Заметим, что тогда: \\
+            \begin{gather*}
+            f(x) = \sum_1^k 1^2 - \sum_1^k 1 * 1 = 0 \ngtr 0.?!?
+            \end{gather*}
+         \end{proof}
+         
+    \subsection{\large{Степень вершин \texorpdfstring{$\leq$ }{Lg} 3}}
+        \begin{proof}{Нет вершин степени > 3}
+            От противного:\\
+            $\letus \text{ } \exists \text{ } i \leq n : deg(x_i) > 3.$ \\
+            Тогда рассмотрим пример:
+            \begin{Graph}
+                \includegraphics[height=90px]{ext/3.4.png} \\
+                \caption{ Здесь, соседи вершины $x_i = 2: x_{j_1}, x_{j_2}, x_{j_3}, x_{j_4} = 1$ }
+            \end{Graph}
+            Тогда: \\ 
+            \begin{gather*}    
+            f(x)=\sum_1^41^2+2^2-\sum_1^42*1 = 8-8=0 \ngtr 0. ?!?
+            \end{gather*}
+        \end{proof}
+    \subsection{\large{Вершин степени 3 не больше одной}}
+        \begin{proof}{Вершин степени 3 $\leq$ 1}
+            От противного:\\
+            $\letus \text{ } \exists\text{ } i,j \leq n : deg(x_i) = 3 \text{ и } deg(x_j) = 3$ \\
+            Также $\letus$ между ними ровно k вершин. \\
+            Тогда рассмотрим пример:
+            \begin{Graph}
+                \includegraphics[height=60px]{ext/3.5.png} \\
+                \caption{Где $x_i=x_j=2, \forall l \leq k : x_{r_l}=2, x_a=x_b=x_c=x_d=1$}
+            \end{Graph}
+            \begin{gather*}    
+            f(x)=\sum_1^{k+2}2^2+\sum_1^41^2-\sum_1^41*2-\sum_1^{k+1}2*2=(k+2)*4+4-8-(k+1)*4\\=4+4-8=0 \ngtr 0. ?!?
+            \end{gather*}
+        \end{proof}
+        Теперь можем представлять граф с помощью одной вершины степени три и трёх ``отростков``, из неё исходящих.
+    \subsection{\large{Один из ``отростков`` графа имеет длину 1}}
+        \begin{proof}{Один из ``отростков`` имеет длину $\leq$ 1}
+            От противного: Предположим, что все ``отростки`` имеют длину хотя бы 2.\\
+            Тогда рассмотрим пример:
+            \begin{Graph}
+                \includegraphics[height=90px]{ext/3.6.png} \\
+                \caption{Здесь, $x_a=3, x_{b_1}=x_{b_2}=x_{b_3}=2, x_{c_1}=x_{c_2}=x_{c_3}=1$}
+            \end{Graph}
+            \begin{gather*}
+            f(x)=3^2+3*2^2+3*1^2-3*2-3*6=9+12+3-6-18=0 \ngtr 0. ?!?
+            \end{gather*}
+        \end{proof}
+    \subsection{\large{Один из оставшихся ``отростков`` имеет длину\texorpdfstring{ $\leq$ }{Lg} 3}}
+        \begin{proof}{Хотя бы один из оставшихся ``отростков`` имеет длину $\leq$ 3}
+            От противного: Предположим, что оба имеют длину $\geq$ 4.\\
+            Тогда рассмотрим пример:
+            \begin{Graph}
+                \includegraphics[height=70px]{ext/3.7.png} \\
+                \caption{Здесь, $x_{i_1} = 10, x_{i_2}=x_{i_3}=8, x_{i_4}=x_{i_5}=6, x_{i_6} = x_{i_7}=4, x_{i_8}=x_{i_9}=2, x_{i_10}=5$}
+            \end{Graph}
+            \begin{gather*} 
+            f(x)=2 * (2^2 + 4^2 + 6^2 + 8^2 + 10^2) + 5^5 - \\ 2 * (2 * 4 + 4 * 6 + 6 * 8 + 8 * 10) - 5 * 10 = -5 < 0. ?!?
+            \end{gather*}
+        \end{proof}
+    \subsection{\large{Получение ответа}}
+        Обозначим ответ на задачу, как тройку чисел \{a, b, c\}, каждое из которых обозначает длину ``отростка``, причём порядок не важен.\\
+        Нахождение ответа делится на несколько пунктов:
+        \begin{enumerate}
+            \item Ответ вида \{1, 1, x\}, x - любое
+            \item Ответ вида \{0, 0, x\}, x - любое
+            \item Ответ вида \{1, 2, x\}, x $\leq$ 4
+            \item Больше ответов не существует
+        \end{enumerate}
+        \subsubsection{Ответ вида \{1, 1, x\}}
+            \begin{proof}{Граф с двумя ``отростками`` длины 1 является ответом}
+                Рассмотрим рисунок:
+                \begin{Graph}
+                    \includegraphics[height=60px]{ext/3.8.1.png}\\
+                    \caption{Здесь, $(x_i), \text{ } y$.}
+                \end{Graph}
+                Запишем выражение:
+                \begin{gather*}
+                f(x)=\sum_{i=1}^n x_i^2 - \sum_{i=1}^{n-1} x_ix_{i+1} -x_2y = \\ 
+                \sum_{i=n}^3 t_i(\frac{1}{2t_i}x_{i}-x_{i+1})^2+\frac{1}{4}(2y-x_2)^2 +\frac{1}{4}(2x_1-x_2)^2+C
+                \end{gather*} Где C - какое-то значение (см. ниже), t - последовательность, определяющаяся как:
+                \begin{gather*}
+                t_{i+1}=\frac{1}{4(1-t_i)}, t_1=\frac{1}{4}
+                \end{gather*}
+
+                Чтобы доказать корректность равенства, сначала докажем Лемму.\\
+                \begin{lemma}{\(t_i<\frac{1}{2}\)}
+                    По индукции:\\
+                    База: i = 1\\
+                    \begin{gather*}
+                    t_i = \frac{1}{4} < \frac{1}{2}
+                    \end{gather*}
+                    Переход: i $\rightarrow$ i+1 \\
+                    $\letus\text{ } t_i=\frac{1}{2}-\frac{1}{a}, \text{ } a > 0$, тогда:
+                    \begin{gather*}
+                    t_{i+1}= \frac{1}{4(1-t_i)} = \frac{1}{4(\frac{1}{2}+\frac{1}{a})} = \frac{2a}{4(a+2)} = \frac{2a}{4a+8} = \frac{a}{2a+4}
+                    \end{gather*} 
+                    \begin{gather*} 
+                    \Rightarrow t_{i+1}=\frac{1}{2}-\frac{1}{a+2}
+                    \end{gather*}
+                \end{lemma}
+                
+                Теперь рассмотрим пару соседних слагаемых:
+                \begin{gather*}
+                t_i ( \frac{1}{2t_i}x_i - x_{i+1})^2 + \frac{1}{4(1-t_i)} ( 2(1-t_i) x_{i+1} - x_{i+2})^2 = \\
+                \frac{1}{4t_i^2}x_i^2 - x_ix_{i+1} + t_ix_{i+1}^2 + \frac{(1-t_i)^2}{(1-t_i)}x_{i+1}^2 - x_{i+1}x_{i+2} + \frac{1}{4(1-t_i)}x_{i+2}^2 = \\
+                x_{i+1}^2 -x_ix_{i+1}-x_{i+1}x_{i+2} + \frac{1}{4t_i^2}x_i^2 + \frac{1}{4(1-t_i)}x_{i+2}^2
+                \end{gather*}
+                \hypertarget{fact1}{Заметим, что перед $x_{i+1}^2$, а также $-x_ix_{i+1}$ и $-x_{i+1}x_{i+2}$,  стоит коэффициент 1, а значит, что перед всеми квадратами и попарными произведениями будет стоять 1}, кроме слагаемого $x_2^2$. Для этого, определим C, как: 
+                \begin{gather*}
+                C =  (1-\frac{1}{4} -\frac{1}{4} - t_{n-2}^2)x_2^2 = (\frac{1}{2}-t_{n-2}^2)x_2^2.
+                \end{gather*}
+                Поскольку $t_{n-2} < \frac{1}{2}$ по лемме, то: 
+                \begin{gather*}
+                t_{n-2}^2 < \frac{1}{4} \Rightarrow C > 0 \rightarrow
+                f(x) - \text{сумма квадратов} + C > 0 \Rightarrow f(x) > 0
+                \end{gather*}
+            \end{proof}
+            То есть ответ \{1, 1, x\} - подходит.
+        \subsubsection{Ответ вида \{0, 0, x\}}
+            \begin{proof}{Бамбук любой длины является ответом}
+                Запишем:
+                \begin{gather*}f(x) = \frac{1}{2}x_1^2 + \sum_1^{n-1} \frac{1}{2}(x_i-x_{i+1})^2 + \frac{1}{2}x_n^2\end{gather*}
+                $\Rightarrow f(x) > 0$, так как сумма квадратов и не все элементы нули.
+            \end{proof}
+        \subsubsection{Ответ вида \{1, 2, x\}, x \texorpdfstring{$\leq$ }{Lg} 4}
+            \begin{proof}{Если один ``отросток`` имеет длину 2, то второй имеет длину $\leq 4$}
+                От противного. \\
+                Рассмотрим пример:
+                \begin{Graph}
+                    \includegraphics[height=60px]{ext/3.8.3.png}\\
+                    \caption{Здесь, $x_{i_1}= x_{i_7}=2, x_{i_2}=x_{i_5}=4, x_{i_3}=6, x_{i_3}=6, x_{i_4}=5, x_{i_6}=y=3, x_{i_8}=1$.}
+                \end{Graph}
+                Тогда: 
+                \begin{gather*} 
+                f(x) = 2 * 2^2 + 2 * 4^2 + 6^2 + 2 * 3^2 + 5^2 + 1^2 -2 * 4 - 4 * 6 - \\ 6 *3 - 6 * 5 - 5 * 4 - 4 * 3 - 3 * 2 0 2 * 1 = 120 - 120 = 0 \ngtr 0. ?!?
+                \end{gather*}
+            \end{proof}
+            \begin{proof}{Достаточность предыдущего утверждения}
+                \begin{gather*} 
+                f(x) = \sum_n^{4}t_i(\frac{1}{2t_i}x_i-x_{i+1})^2 + \frac{1}{4}(2y-x_3)^2+\sum_1^2t_i(\frac{1}{2t_i}x_i-x_{i+1})^2 + C
+                \end{gather*} Где C - какая-то величина.\\
+                Тогда выполняются \hyperlink{fact1}{все те же утверждения}, кроме коэффициента перед $x_3^2$:
+                $t_2+t_{n-3}+\frac{1}{4}$.
+                Выпишем первые четыре $t_i$:
+                \(t_1 = \frac{1}{4}, t_2=\frac{1}{3}, t_3=\frac{3}{8}, t_4=\frac{2}{5}\).\\
+                Заметим, что так как длина ``отростка`` $\leq 4$, то $t_{n-3} \leq t_4 \Rightarrow$ максимальная сумма:\\
+                \(t_2+t_4+\frac{1}{4} = \frac{1}{3} + \frac{2}{5} + \frac{1}{4} =\frac{59}{60} \Rightarrow\) коэффициент перед $x_3^2 < 1 \Rightarrow C > 0 \Rightarrow$ $f(x) > 0$.
+            \end{proof}
+        \subsubsection{Больше ответов не существует}
+            \begin{proof}{Если ``отросток`` имеет длину хотя бы 3, то второй будет иметь длину $\leq$ 2}
+                Рассмотрим пример:
+                \begin{Graph}
+                    \includegraphics[height=60px]{ext/3.8.4.png}\\
+                    \caption{ Здесь, $x_{i_1}=x_{i_7}=1, x_{i_2}=x_{i_6}=2, x_{i_3}=x_{i_5}=3, x_{i_4}=4, y=2$.}
+                \end{Graph}
+                \(f(x)=2*1^2+3*2^2+2*3^3+4^2 - 2 * (1 * 2 + 2 * 3 + 3 * 4) - 2 * 4 = 48 - 48 = 0 \ngtr 0\) ?!?
+            \end{proof}
+            Заметим, что тогда такие ответы, с точностью до отражения, мы уже рассматривали в пунктах 3.8.1 и 3.8.3
+        \subsubsection{Итоговый ответ.}
+            Подходят графы, состоящие из компонент связности вида \{0, 0, x\}, x - любое; \{1, 1, x\}, x - любое; \{1, 2, x\}, $x \leq 4$.
+    \pagebreak
+    
+    \section{\textsc{Классификация неотрицательных форм}}
+        Шаги решения:
+        \begin{enumerate}
+            \item $a_{ij} + a_{ji} \leq 2$, причем при равенстве всего 1 ответ. Можем рассматривать как граф.
+            \item Рассматриваем компоненты связности по отдельности.
+            \item Каждая компонента дерево либо цикл.
+            \item Все вершины имеют степень $\leq 4$.
+            \item Вершин степени 4 не больше одной.
+            \item Если есть все 4 ``отростка``, то их длины ровно 1.
+            \item Итоговый ответ.
+        \end{enumerate}
+        
+        \subsection{\large{Можем рассматривать как граф}}
+            \subsubsection{\texorpdfstring{$a_{ij} + a_{ji} \leq 2$}{Lg}}
+                \begin{proof}{\texorpdfstring{$a_{ij} + a_{ji} \leq 2$}{Lg}}
+                    Рассмотрим пример:
+                    \begin{Graph}
+                        \includegraphics[height=30px]{ext/4.1.1.png}\\
+                        \caption{ Здесь, $x_i=x_j=1$}
+                    \end{Graph}
+                    Тогда: 
+                    \begin{gather*}
+                    f(x)=1^2+1^2-(a_{ij}+a_{ji})<0. ?!?
+                    \end{gather*}
+                \end{proof}
+            \subsubsection{При равенстве всего 1 пример}
+                \begin{proof}{При равенстве всего 1 пример}
+                    Предположим, что в такой компоненте хотя бы 3 вершины.
+                    Тогда рассмотрим пример:
+                    \begin{Graph}
+                        \includegraphics[height=30px]{ext/4.1.2.png}\\
+                        \caption{ Здесь, $x_{i_1}=x_{i_2}=2, x_{i_3}=1$.}
+                    \end{Graph}
+                    Тогда: 
+                    \begin{gather*}
+                    f(x)=2*2^2+1^2-2*2*2-2*1*(a_{ij}+a_{ji})=1-2*(a_{ij}+a_{ji}) < 0. ?!?
+                    \end{gather*}
+                \end{proof}
+        \subsection{\large{Рассмотрение компонент связности по отдельности.}}
+            Аналогично пункту \hyperlink{Component}{3.2}
+        \subsection{\large{Каждая компонента -- дерево либо цикл.}}
+            \begin{proof}{Каждая компонента -- дерево либо цикл.}
+                От противного.\\
+                Пусть в компоненте есть цикл и ещё 1 вершина или ребро вне него.\\
+                Если вершина, тогда рассмотрим пример:
+                \begin{Graph}
+                    \includegraphics[height=60px]{ext/4.2.png}\\
+                    \caption{Здесь, $\forall i \leq n : x_i=2, y=1$}
+                \end{Graph}
+                Тогда: 
+                \begin{gather*}
+                f(x)=k*2^2+1^2-2*2*k-2*1=-1 < 0. ?!?
+                \end{gather*}
+                Если ребро, тогда, взяв все вершины за 1:
+                \begin{gather*}
+                f(x)=k*1^2-k*1^2-1*1*1=-1 < 0. ?!?
+                \end{gather*}
+            \end{proof}
+        \subsection{\large{Все вершины имеют степень \texorpdfstring{$\leq$ }{Lg} 4}}
+            {\begin{proof}{Все вершины имеют степень \texorpdfstring{$\leq$ }{Lg} 4}
+                От противного.\\
+                Тогда рассмотрим пример:
+                \begin{Graph}
+                    \includegraphics[height=60px]{ext/4.3.png}\\
+                    \caption{Здесь, $x_1=x_2=x_3=x_4=x_5=1, y=2$.}
+                \end{Graph}
+                Тогда: 
+                \begin{gather*}
+                f(x)=5*1^2+2^2-2*1*5=9-10=-1<0. ?!?
+                \end{gather*}
+            \end{proof}
+        \subsection{\large{Вершин степени 4 не больше одной.}}
+            \begin{proof}{Вершин степени 4 не больше одной.}
+                От противного.\\
+                Рассмотрим пример:
+                \begin{Graph}
+                    \includegraphics[height=60px]{ext/4.5.png}\\
+                    \caption{Здесь,  $y_1=y_2= ... = y_6=1, x_1=x_2 = ... = x_k=2$}
+                \end{Graph}
+                Тогда: 
+                \begin{gather*}
+                f(x)=6*1^2+k*2^2-(k-1)*2*2-2*6=-2<0. ?!?
+                \end{gather*}
+            \end{proof}
+        \subsection{\large{Если есть все 4 ``отростка``, то их длины ровно 1.}}
+            \begin{proof}{Если есть все 4 ``отростка``, то их длины ровно 1.}
+                От противного.\\
+                Рассмотрим пример:
+                \begin{Graph}
+                    \includegraphics[height=90px]{ext/4.6.png}\\
+                    \caption{Здесь, $x_{i_1}=4, x_{i_2}=3, x_{i_3}=x_{i_4}=x_{i_5}=2$}
+                \end{Graph}
+                Тогда: 
+                \begin{gather*}
+                f(x)=4*2^2+3^3+4^2-2*3-3*4-4*2*3=-1<0. ?!?
+                \end{gather*}
+            \end{proof}
+        \subsection{\large{Итоговый ответ.}}
+            Ответами будут являться компоненты связности вида: цикла; двух вершин с ребром 2; вершины с четырьмя детьми; того же набора компонент, что и для положительных форм.
+    \pagebreak
+
+    \section{\textsc{Графы решений положительных форм}}
+        Будем рассматривать графы решений уравнения $f(x) = 1$.\\
+        Шаги решения:\\
+        \begin{enumerate}
+            \item Решения форм вида \{0, 0, x\}
+            \item Графы решений форм вида \{0, 0, x\}
+            \item Решения форм вида \{1, 1, x\}
+            \item Графы решений форм вида \{1, 1, x\}
+            \item Решения форм вида \{1, 2, x\}
+            \item Графы решений форм вида \{1, 2, x\}
+            \item Следствия
+        \end{enumerate}
+        
+        \subsection{\large{Решения форм вида \{0, 0, x\}}}
+            Рассмотрим запись такой формы:
+            \begin{gather*}
+            f(x)=\sum_1^n x_i^2 - \sum_1^{n-1} x_ix_{i+1} = \sum_1^{n-1} \frac{1}{2}(x_i-x_{i+1})^2 +\frac{1}{2}x_1^2 + \frac{1}{2}x_n^2 = 1
+            \end{gather*}
+            \begin{gather*}
+            \sum_1^{n-1} (x_i-x_{i+1})^2 + x_1^2 + x_n^2 = 2
+            \end{gather*}
+            Обозначим пару $(x_i, x_{i+1})$ переходом, если $|x_i-x_{i+1}| = 1$.\\
+            Также стоит заметить, что $\nexists \text{ } i : |x_i-x_{i+1}| > 1$, так как, тогда вся сумма выражения будет $\geq$ 4. По аналогичным соображениям $|x_1|$ < 2 и $|x_n|$ < 2. Тогда, поскольку все числа целые и квадраты неотрицательны, то достаточно рассмотреть лишь несколько случаев:
+            \begin{enumerate}
+                \item $x_1 = \pm 1, x_n=\pm 1$, переходов 0.
+                \item $x_1 = \pm1, x_n=0$, переход 1.
+                \item $x_1 = 0, x_n=\pm 1$, переход 1.
+                \item $x_1 = 0, x_n = 0$, переходов 2.
+            \end{enumerate}
+            \subsubsection{\texorpdfstring{$x_1 = \pm 1, x_n=\pm 1$}{Lg}, переходов 0.}
+                Заметим, что поскольку переходов 0, то все числа равны. Откуда следует, что $x_1 = x_n$.\\
+                Поэтому получаем два ответа: $\forall \text{ } 1 \leq i \leq n : x_i=1$ и $\forall \text{ } 1 \leq i \leq n : x_i=-1$.
+            \subsubsection{\texorpdfstring{$x_1 = \pm1, x_n = 0$}{Lg}, переход 1.}
+                Поскольку переход всего 1, то получаем возможные ответы, как массив из 1 или -1, конкатенированный с массивом из 0.
+                То есть ответы вида: $\exists \text{ } 1 \leq i < n : \forall \text{ } 1 \leq j \leq i : x_j=1, \forall \text{ } i < j \leq n : x_j=0$ и $\exists \text{ } 1 \leq i < n : \forall \text{ } 1 \leq j \leq i : x_j=-1, \forall \text{ } i < j \leq n : x_j=0$
+            \subsubsection{\texorpdfstring{$x_1 = 0, x_n=\pm 1$, переход 1.}{Lg}}
+                Аналогично предыдущему пункту получаем ответы: $\exists \text{ } 1 < i \leq n : \forall \text{ } 1 \leq j < i : x_j=0, \forall \text{ } i \leq j \leq n : x_j=1$ и $\exists \text{ } 1 < i \leq n : \forall \text{ } 1 \leq j < i : x_j=0, \forall \text{ } i \leq j \leq n : x_j=-1$
+            \subsubsection{\texorpdfstring{$x_1 = 0, x_n = 0$}{Lg}, переходов 2.}
+                Заметим, что данный набор аналогичен тому, что $\exists \text{ } 1 < i \leq j < n : \forall \text{ } i \leq k \leq j : x_k = 1$ или $\exists \text{ } 1 < i \leq j < n : \forall \text{ } i \leq k \leq j : x_k = -1$.\\
+            \\
+            Из всех данных случаев получаем, что единственным и достаточным условием ответа является массив из нулей, содержащий в себе подмассив из 1 или -1. То есть общее решение выглядит, как:
+            \begin{gather*}\exists \text{ } 1 \leq i \leq j \leq n : \forall \text{ } i \leq k \leq j : x_k = 1 \lor \exists \text{ } 1 \leq i \leq j \leq n : \forall \text{ } i \leq k \leq j : x_k = -1.\end{gather*}
+        \subsection{\large{Графы решений форм вида \{0, 0, x\}}}
+            Зная множество решений этой формы, можно заметить что граф слабоположительных решений, будет выглядеть, как граф, у каждой вершины которого 2 родителя и 2 ребёнка, за исключением, вершины корня (решения из всех 1), и вершин листьев, решения с одной 1).
+            \begin{Graph}
+                \includegraphics[height=230px]{ext/5.2.1.png}\\
+                \caption{Граф слабоположительных решений для x = 5.}
+                \includegraphics[height=230px]{ext/5.2.2.png}\\
+                \caption{Граф всех решений для x = 5.}
+            \end{Graph}
+        \subsection{\large{Решения форм вида \{1, 1, x\}}}
+             Рассмотрим запись такой формы:
+            \begin{gather*}
+            f(x)=\sum_1^n x_i^2 - \sum_1^{n-1} x_ix_{i+1} - x_2y = \sum_2^{n-1} \frac{1}{4}(x_i-x_{i+1})^2 +\frac{1}{4}(2x_1-x_2)^2 + \frac{1}{4}(2y-x_2)^2 + \frac{1}{2} x_n^2 = 1
+            \end{gather*}
+            \begin{gather*}
+            \sum_2^{n-1} 2(x_i-x_{i+1})^2 + 2x_n^2 + (2x_1-x_2)^2+(2y-x_2)^2 = 4
+            \end{gather*}
+            Обозначим пару $(x_i, x_{i+1})$ переходом, если $|x_i-x_{i+1}| = 1$.\\
+            Тогда, достаточно рассмотреть несколько случаев:\\
+            \begin{enumerate}
+                \item $x_n^2 = 0$
+                \begin{enumerate}
+                    \item 
+                    $
+                        \begin{cases}
+                            (2x_1-x_2)^2=1\\
+                            (2y-x_2^2)^2=1\\
+                            1 \text { переход}
+                        \end{cases}
+                    $
+                    \item 
+                    $
+                        \begin{cases}
+                            (2x_1-x_2)^2=4\\
+                            (2y-x_2^2)^2=0\\
+                            0 \text { переходов}
+                        \end{cases}
+                    $
+                    \item 
+                    $
+                        \begin{cases}
+                            (2x_1-x_2)^2=0\\
+                            (2y-x_2^2)^2=4\\
+                            0 \text { переходов}
+                        \end{cases}
+                    $
+                    \item 
+                    $
+                        \begin{cases}
+                            (2x_1-x_2)^2=0\\
+                            (2y-x_2^2)^2=0\\
+                            2 \text { перехода}
+                        \end{cases}
+                    $
+                \end{enumerate}
+                \item $x_n=1$
+                \begin{enumerate}
+                    \item 
+                    $
+                        \begin{cases}
+                            (2x_1-x_2)^2=1\\
+                            (2y-x_2)^2=1\\
+                            0 \text{ переходов}
+                        \end{cases}
+                    $
+                    \item 
+                    $
+                        \begin{cases}
+                            (2x_1-x_2)^2=0\\
+                            (2y-x_2^2)^2=0\\
+                            1 \text{ переход}
+                        \end{cases}
+                    $
+                \end{enumerate}
+                \item $x_n=-1$
+                \begin{enumerate}
+                    \item 
+                    $
+                        \begin{cases}
+                            (2x_1-x_2)^2=1\\
+                            (2y-x_2)^2=1\\
+                            0 \text{ переходов}
+                        \end{cases}
+                    $
+                    \item 
+                    $
+                        \begin{cases}
+                            (2x_1-x_2)^2=0\\
+                            (2y-x_2^2)^2=0\\
+                            1 \text{ переход}
+                        \end{cases}
+                    $
+                \end{enumerate}
+            \end{enumerate}
+        \subsubsection{}
+            $
+                \begin{cases}
+                    x_n=0\\
+                    (2x_1-x_2)^2=1\\
+                    (2y-x_2^2)^2=1\\
+                    1 \text{ переход}
+                \end{cases}
+            $\\
+            Поскольку $x_n=0$, то есть два варианта: переход вида (1, 0) и (-1, 0), поэтому $x_2=\pm1$. Откуда $2x_1=\pm1\pm1 \Rightarrow x_1=0 \text{ или } x_1=x_2$. Аналогично $2y=\pm1\pm1 \Rightarrow y=0 \text{ или } y=x_2$. Соответственно решения будут выглядеть, как массив нулей с подмассивом 1 или -1 и отдельно заданными $x_1$ и $y$, то есть: 
+            \begin{gather*}
+            \exists \text{ } 2 \leq i \leq n-1 : \forall \text{ } 2 \leq k \leq i : x_k = 1, \text{ } x_1 = \begin{sqcases} 0 \\ 1 \end{sqcases}, \text{ } y = \begin{sqcases} 0 \\ 1 \end{sqcases}\\
+             \exists \text{ } 2 \leq i \leq n-1 : \forall \text{ } 2 \leq k \leq i : x_k = -1, \text{ } x_1 = \begin{sqcases} 0 \\ -1 \end{sqcases}, \text{ } y = \begin{sqcases} 0 \\ -1 \end{sqcases}
+             \end{gather*}
+        \subsubsection{}
+            $
+            \begin{cases}
+                x_n = 0\\
+                (2x_1-x_2)^2=4\\
+                (2y-x_2^2)^2=0\\
+                0 \text { переходов}
+            \end{cases}
+            $\\
+            Заметим, что так как переходов 0, то $x_2=x_n=0 \Rightarrow x_1 = 0, \text{ } 2y=\pm2 +x_2 \Rightarrow y=x_2\pm1=\pm1.$ Тогда ответом является:
+            \begin{gather*}
+            \forall \text{ } 1 \leq i \leq n : x_i=0, \text{ } y = 1.
+            \\
+            \forall \text{ } 1 \leq i \leq n : x_i=0, \text{ } y = -1.
+            \end{gather*}
+        \subsubsection{} 
+            $
+            \begin{cases}
+                x_n=0\\
+                (2x_1-x_2)^2=0\\
+                (2y-x_2^2)^2=4\\
+                0 \text { переходов}
+            \end{cases}
+            $\\
+            Аналогично предыдущему пункту получаем ответы:
+            \begin{gather*}
+            \forall \text{ } 2 \leq i \leq n : x_i=0, \text{ } y = 0, \text{ } x_1 = 1
+            \\
+            \forall \text{ } 2 \leq i \leq n : x_i=0, \text{ } y = 0, \text{ } x_1 = -1
+            \end{gather*}
+        \subsubsection{}
+            $
+                \begin{cases}
+                    x_n = 0\\
+                    (2x_1-x_2)^2=0\\
+                    (2y-x_2^2)^2=0\\
+                    2 \text { перехода}
+                \end{cases}
+            $\\
+            Из второго и третьего равенства получаем, что $x_1=y=\frac{x_2}{2}$.
+            Также поскольку переходов ровно 2, то всего четыре случая: когда есть переходы (1, 0) и (2, 1); (1, 0) и (0, 1); (-1, 0) и (-2, -1); (-1, 0) и (0, -1). То есть существуют решения вида:\\
+            $
+            \exists \text{ } 2 \leq i \leq n-1 : \forall \text{ } 2 \leq k \leq i : x_k=2, \text{ } \forall \text{ } i < k \leq j : x_k = 1, \\ \forall \text{ } j < k \leq n : x_k=0, \text{ } x_1=y=1 
+            $ \\ и \\
+            $
+            \exists \text{ } 2 \leq i < j \leq n-1 : \forall \text{ } 2 \leq k \leq i : x_k=0, \text{ } \forall \text{ } i < k \leq j : x_k = 1, \\ \forall \text{ } j < k \leq n : x_k=0, \text{ } x_1=y=0
+            $\\ и \\
+            $
+            \exists \text{ } 2 \leq i < j \leq n-1 : \forall \text{ } 2 \leq k \leq i : x_k=-2, \text{ } \forall \text{ } i < k \leq j : x_k = -1, \\ \forall \text{ } j < k \leq n : x_k=0, \text{ } x_1=y=-1 
+            $\\ и \\
+            $
+            \exists \text{ } 2 \leq i < j \leq n-1 : \forall \text{ } 2 \leq k \leq i : x_k=0, \text{ } \forall \text{ } i < k \leq j : x_k = -1, \\ \forall \text{ } j < k \leq n : x_k=0, \text{ } x_1=y=0 
+            $
+        \subsubsection{}
+            $
+                \begin{cases}
+                    x_n=1\\
+                    (2x_1-x_2)^2=1\\
+                    (2y-x_2)^2=1\\
+                    0 \text{ переходов}
+                \end{cases}
+            $\\
+            Так как переходов 0, то $x_2 = 1$, а также $2x_1=1\pm1$ и $2y=1\pm1 \Rightarrow x_1=\begin{sqcases}0\\1\\\end{sqcases}$ и $y= \begin{sqcases}0\\1\\\end{sqcases}$. То есть решениями являются:\\
+            $
+            \forall \text{ } 2 \leq i \leq n : x_i=1, \text{ } x_1 = 0, \text{ } y = 0.
+            $\\ и \\
+            $
+            \forall \text{ } 2 \leq i \leq n : x_i=1, \text{ } x_1 = 1, \text{ } y = 0.
+            $\\ и \\
+            $
+            \forall \text{ } 2 \leq i \leq n : x_i=1, \text{ } x_1 = 0, \text{ } y = 1.
+            $\\ и \\
+            $
+            \forall \text{ } 2 \leq i \leq n : x_i=1, \text{ } x_1 = 1, \text{ } y = 1.
+            $
+        \subsubsection{}
+            $
+                \begin{cases}
+                    x_n=1\\
+                    (2x_1-x_2)^2=0\\
+                    (2y-x_2^2)^2=0\\
+                    1 \text{ переход}
+                \end{cases}
+            $\\
+            Так как переход 1, то есть два варианта: $x_2 = 0$ и $x_2=2$.
+            В первом случае $x_1 = y = 0$, во втором $x_1=y=1$. То есть решениями являются:
+            $
+            \exists \text{ } 2\leq i \leq n-1 : \forall \text{ } 1 \leq k < i : x_k=0, \forall \text{} i \leq k \leq n : x_k = 1, \text{ } y = 0. 
+            $\\ и \\
+            $
+            \exists \text{ } 2\leq i \leq n-1 : \forall \text{ } 2 \leq k < i : x_k=2, \forall \text{ } i \leq k \leq n : x_k = 1, \text{ } y = x_1 = 1. 
+            $
+        \subsubsection{}
+            $
+                \begin{cases}
+                    x_n=-1\\
+                    (2x_1-x_2)^2=1\\
+                    (2y-x_2)^2=1\\
+                    0 \text{ переходов}
+                \end{cases}
+            $\\
+            Аналогично, решения:\\
+            $
+            \forall \text{ } 2 \leq i \leq n : x_i=-1, \text{ } x_1 = 0, \text{ } y = 0.
+            $\\ и \\
+            $
+            \forall \text{ } 2 \leq i \leq n : x_i=-1, \text{ } x_1 = -1, \text{ } y = 0.
+            $\\ и \\
+            $
+            \forall \text{ } 2 \leq i \leq n : x_i=-1, \text{ } x_1 = 0, \text{ } y = -1.
+            $\\ и \\
+            $
+            \forall \text{ } 2 \leq i \leq n : x_i=-1, \text{ } x_1 = -1, \text{ } y = -1.
+            $
+        \subsubsection{}
+            $
+                \begin{cases}
+                    x_n=-1\\
+                    (2x_1-x_2)^2=0\\
+                    (2y-x_2^2)^2=0\\
+                    1 \text{ переход}
+                \end{cases}
+            $\\
+            Аналогично, решения:\\
+            $
+            \exists \text{ } 2\leq i \leq n-1 : \forall \text{ } 1 \leq k < i : x_k=0, \forall \text{ } i \leq k \leq n : x_k = -1, \text{ } y = 0. 
+            $\\ и \\
+            $
+            \exists \text{ } 2\leq i \leq n-1 : \forall \text{ } 2 \leq k < i : x_k=-2, \forall \text{ } i \leq k \leq n : x_k = -1, \text{ } y = x_1 = -1. 
+            $
+
+        
+        \subsection{\large{Графы решений форм вида \{1, 1, x\}}}
+            Граф решений такой формы, очевидно, будет содержать в себе граф решений бамбуковой формы(который частично образуют все рассмотренные случаи 5.3), а также будут существовать решения, содержащие в себе префикс из 1 или -1 и $y = \begin{sqcases}1\\-1\end{sqcases}$ соответственно.
+            Кроме того, будет ещё 1 тип решений: конкатенация массивов [1], массива из 2, массива из 1, массива из 0, и $y = 1$. И соответствующий ему массив с отрицательными значениями. \\
+            Тогда граф решений можно представить как расширение графа решений бамбуковой формы, в котором будет надстроен граф над вершиной корнем, в котором рёбра ведущие снизу вверх заменяют 1 на 0, а слева направо заменяют 1 на 2.
+            \begin{Graph}
+                \includegraphics[height=500px]{ext/5.4.1.png}\\
+                \caption{Граф слабоположительных решений для формы \{1, 1, 3\}}
+            \end{Graph}
+            \begin{Graph}
+                \includegraphics[height=500px]{ext/5.4.2.png}\\
+                \caption{Граф всех решений для формы \{1, 1, 3\}}
+            \end{Graph}
+    \subsection{\large{Решения форм вида \{1, 2, x\}}}
+        Мы будем рассматривать:
+        \begin{enumerate} 
+            \item Граф решений и решения формы \{1, 2, 2\} 
+            \item Граф решений и решения формы \{1, 2, 3\} 
+            \item Граф решений и решения формы \{1, 2, 4\}
+        \end{enumerate}
+        Представления решений этих форм возможно только с перебором большого количества вариантов, приводить который не является необходимым. Поэтому было доказано, что значения вершин в решениях лежат в определенном диапазоне, и был проведён компьютерный перебор, для нахождения решений и рёбер между ними.
+    \subsection{\large{Граф решений и решения формы \{1, 2, 2\}}}
+        \begin{proof}{В решении этой формы все числа лежат в отрезке [-3, 3]}
+            Запишем сумму квадратов для этой формы:
+            \begin{gather*}
+                f(x)=x_1^2+x_2^2+x_3^2+x_4^2+x_5^2+y^2 \\
+                -x_1x_2-x_2x_3-x_3x_4-x_4x_5-x_3y = 1 
+            \end{gather*} 
+            \begin{gather*}
+                f(x) = \frac{1}{4} (2y-x_3)^2+\frac{1}{4} (2x_5-x_4)^2 + \frac{1}{3} (\frac{3}{2} x_4 - x_3)^2 +\\ \frac{1}{4} (2x_1-x_2)^2 + \frac{1}{3} (\frac{3}{2} x_2 - x_3)^2 + \frac{1}{12} x_3^2 = 1
+            \end{gather*}
+            \begin{gather*}
+                3(2y-x_3)^2+3(2x_5-x_4)^2 + (3x_4 - 2x_3)^2 + 3(2x_1-x_2)^2 + (3 x_2 - 2x_3)^2 + x_3^2 = 12
+            \end{gather*}
+            Из этой суммы, следует что: \\
+            $|x_3| \leq 3 \Rightarrow 
+            \begin{cases}
+                3x_2 \leq 3 + 2x_3 \leq 9 \rightarrow x_2 \leq 3 \\
+                3x_2 \geq -3 + 2x_3 \geq -9 \rightarrow  x_2 \geq -3 \\
+                3x_4 \leq 3 + 2x_3 \leq 9 \rightarrow x_4 \leq 3 \\
+                3x_4 \geq -3 + 2x_3 \geq -9 \rightarrow  x_4 \geq -3 \\
+                2y \leq 2 + x_3 \leq 5 \rightarrow y \leq 2 \\
+                2y \geq 2 + x_3 \geq -5 \rightarrow y \geq -2
+            \end{cases} \Rightarrow
+            \begin{cases}
+                2x_1 \leq 2 + x_2 \leq 5 \rightarrow x_1 \leq 2 \\
+                2x_1 \geq -2 + x_2 \geq -5 \rightarrow x_1 \geq -2 \\
+                2x_5 \leq 2 + x_4 \leq 5 \rightarrow x_5 \leq 2 \\
+                2x_5 \geq -2 + x_4 \geq -5 \rightarrow x_5 \geq -2 \\
+            \end{cases}
+            $
+        \end{proof}
+         Решения: Смотри \hyperlink{table1}{таблицу 1} .
+
+    \subsection{\large{Граф решений и решения формы \{1, 2, 3\}}}
+        \begin{proof}{В решении этой формы все числа лежат в отрезке [-4, 4]}
+            Запишем сумму квадратов для этой формы:
+            \begin{gather*}
+                f(x)=x_1^2+x_2^2+x_3^2+x_4^2+x_5^2+x_6^2+y^2 \\
+                - x_1x_2-x_2x_3-x_3x_4-x_4x_5-x_5x_6-x_3y = 1 
+            \end{gather*} 
+            \begin{gather*}
+                f(x) = \frac{1}{4} (2y-x_3)^2+\frac{1}{4} (2x_6-x_5)^2 + \frac{1}{3} (\frac{3}{2} x_5 - x_4)^2 + \\
+                \frac{3}{8} (\frac{4}{3} x_4 - x_3)^2 +  \frac{1}{4} (2x_1-x_2)^2 +  \frac{1}{3} (\frac{3}{2} x_2 - x_3)^2 + \frac{1}{24} x_3^2 = 1
+            \end{gather*}
+            \begin{gather*}
+                6(2y-x_3)^2+6(2x_6-x_5)^2 +2(3x_5 - 2x_4)^2 + \\ (4x_4 - 3x_3)^2 +  6(2x_1-x_2)^2 + 2(3x_2 - 2x_3)^2 + x_3^2 = 24
+            \end{gather*}
+            Из этой суммы, следует что: 
+            \begin{gather*}|x_3| \leq 4 \Rightarrow\end{gather*}
+            \begin{gather*} 
+            \begin{cases}
+                3x_2 \leq 3 + 2x_3 \leq 11 \rightarrow x_2 \leq 3 \\
+                3x_2 \geq -3 + 2x_3 \geq -11 \rightarrow  x_2 \geq -3 \\
+                4x_4 \leq 3 + 3x_3 \leq 15 \rightarrow x_4 \leq 3 \\
+                4x_4 \geq -3 + 3x_3 \geq -15 \rightarrow  x_4 \geq -3 \\
+                2y \leq 2 + x_3 \leq 6 \rightarrow y \leq 3 \\
+                2y \geq 2 + x_3 \geq -6 \rightarrow y \geq -3
+            \end{cases} \Rightarrow \end{gather*}
+            \begin{gather*}
+            \begin{cases}
+                2x_1 \leq 2 + x_2 \leq 5 \rightarrow x_1 \leq 2 \\
+                2x_1 \geq -2 + x_2 \geq -5 \rightarrow x_1 \geq -2 \\
+                3x_5 \leq 3 + 2x_4 \leq 9 \rightarrow x_5 \leq 3 \\
+                3x_5 \geq -3 + 2x_4 \geq -9 \rightarrow x_5 \geq -3 \\
+            \end{cases} \Rightarrow \end{gather*}
+            \begin{gather*}
+            \begin{cases}
+                2x_6 \leq 2 + x_5 \leq 5 \rightarrow x_6 \leq 2 \\ 
+                2x_6 \geq -2 + x_5 \leq -5 \rightarrow x_6 \geq -2 \\ 
+            \end{cases}
+            \end{gather*}
+        \end{proof}
+         Решения: Смотри \hyperlink{table2}{таблицу 2}.
+    
+    \subsection{\large{Граф решений и решения формы \{1, 2, 4\}}}
+        \begin{proof}{В решении этой формы все числа лежат в отрезке [-7, 7]}
+            Запишем сумму квадратов для этой формы:
+           \begin{gather*}
+            f(x)=x_1^2+x_2^2+x_3^2+x_4^2+x_5^2+x_6^2+x_7^2+y^2 -\\ x_1x_2-x_2x_3-x_3x_4-x_4x_5-x_5x_6-x_3y = 1 
+            \end{gather*} 
+            \begin{gather*}
+            f(x) = \frac{1}{4} (2x_1-x_2)^2+\frac{1}{3} (\frac{3}{2}x_2-x_3)^2 + \frac{1}{4} (2y - x_3)^2 + \frac{1}{4} (2x_7 - x_6)^2 + \\  \frac{1}{3} (\frac{3}{2}x_6-x_)5^2 + \frac{3}{8} (\frac{4}{3} x_5 - x_4)^2
+            + \frac{2}{5} (\frac{5}{3}x_4-x_3)^2 + \frac{1}{60} x_3^2 = 1
+            \end{gather*}
+            \begin{gather*}
+            30(2x_1-x_2)^2+40(\frac{3}{2}x_2-x_3)^2 + 30(2y - x_3)^2 + 30(2x_7 - x_6)^2 + \\ 40(\frac{3}{2}x_6-x_)5^2 + 45(\frac{4}{3} x_5 - x_4)^2 + 48(\frac{5}{4}x_4-x_3)^2 + 2x_3^2 = 120
+            \end{gather*}
+            \begin{gather*}
+            30(2x_1-x_2)^2+10(3x_2-2x_3)^2 + 30(2y - x_3)^2 + 30(2x_7 - x_6)^2 +\\ 10(3x_6-2x_5)^2 + 5(4x_5 - 3x_4)^2 + 3(5x_4-4x_3)^2 + 2x_3^2 = 120
+            \end{gather*}
+            Из этой суммы, следует что: 
+            \begin{gather*}|x_3| \leq 7 \Rightarrow\end{gather*}
+            \begin{gather*} 
+            \begin{cases}
+                (3x_2-2x_3)^2 \leq 12 \rightarrow 
+                \begin{cases} 
+                3x_2\leq 3 + 2x_3 \leq 17 \rightarrow x_2 \leq 5 \\
+                3x_2 \geq -3 + 2x_3 \geq -17 \rightarrow  x_2 \geq -5
+                \end{cases}\\
+                (5x_4-4x_3)^2 \leq 40 \rightarrow 
+                \begin{cases} 
+                5x_4 \leq 6 + 4x_3 \leq 34 \rightarrow x_4 \leq 6 \\
+                5x_4 \geq -6 + 4x_3 \geq -34 \rightarrow  x_4 \geq -6
+                \end{cases}\\
+                (2y-x_3)^2 \leq 4 \rightarrow
+                \begin{cases}
+                2y \leq 2 + x_3 \leq 9 \rightarrow y \leq 4 \\
+                2y \geq 2 + x_3 \geq -9 \rightarrow y \geq -4
+                \end{cases}
+            \end{cases} \Rightarrow \end{gather*}
+            \begin{gather*}
+            (4x_5-3x_4)^2 \leq 24 \rightarrow 
+            \begin{cases} 
+            4x_5 \leq 4 + 3x_4 \leq 22 \rightarrow x_5 \leq 5 \\
+            4x_5 \geq -4 + 3x_4 \geq -22 \rightarrow  x_5 \geq -5
+            \end{cases}\\
+            \Rightarrow \end{gather*}
+            \begin{gather*}
+            (3x_6-2x_5)^2 \leq 12 \rightarrow
+            \begin{cases}
+                3x_6 \leq 3 + 2x_5 \leq 13 \rightarrow x_6 \leq 4 \\ 
+                3x_6 \geq -3 + 2x_5 \leq -13 \rightarrow x_6 \geq -4 \\ 
+            \end{cases}
+            \Rightarrow
+            \end{gather*}
+            \begin{gather*}
+            (2x_7-x_6)^2 \leq 4 \rightarrow
+            \begin{cases}
+                2x_7 \leq 2 + x_6 \leq 6 \rightarrow x_7 \leq 3 \\ 
+                2x_7 \geq -2 + x_6 \leq -6 \rightarrow x_7 \geq -3 \\ 
+            \end{cases}
+            \end{gather*}
+        \end{proof}
+        Решения: Смотри \hyperlink{table3}{таблицу 3}
+    \pagebreak
+
+    \section{\textsc{Графы решений неотрицательных форм}}
+        Будем рассматривать графы решений уравнения $f(x) = 1$.\\
+        Помимо форм являющихся положительными, существует несколько неотрицательных форм:\\
+        \begin{enumerate}
+            \item Две вершины связанные ребром веса 2
+            \item Цикл
+            \item Вершина с четырьмя листьями
+        \end{enumerate}
+
+        \subsection{\large{Две вершины, связанные ребром веса 2}}
+            \begin{gather*}
+                f(x)=x^2+y^2-2xy=(x-y)^2=1
+            \end{gather*}
+            Заметим, что тогда есть всего 2 вида решений: (x, x + 1) и (x, x - 1). Также есть всего 1 вид рёбер: ((x, x+1), (x, x-1)).\\
+            \begin{Graph}
+                \includegraphics[height=90px]{ext/6.1.1.png}
+                \caption{Граф слабоположительных решений}
+                \includegraphics[height=90px]{ext/6.1.2.png}
+                \caption{Граф всех решений}
+            \end{Graph}
+
+        \subsection{\large{Цикл}}
+            \begin{gather*}
+                f(x)=\sum_1^n x_i^2 - \sum_1^{n-1} x_i x_{i+1} - x_nx_1 = \\
+                \sum_1^{n-1} \frac{1}{2}(x_i-x_{i+1})^2 + \frac{1}{2}(x_n-x_1)^2 = 1 \Rightarrow \\
+                \sum_1^{n-1} (x_i-x_{i+1})^2 + (x_n-x_1)^2 = 2
+            \end{gather*}
+            Обозначим пару $(x_i, x_{i+1})$ (или $(x_n, x_1)$) переходом, если $|x_i-x_{i+1}| = 1$.\\
+            Тогда в этом множестве ровно два перехода, а также, поскольку переходы циклические, то это значит что решение имеет форму:\\
+            \begin{gather*}
+                \exists\text{ } d \in \mathbb{Z} : \\
+                \exists \text{ } 1 \leq i \leq j \leq n : \forall \text{ } 1 \leq k < i \text{ или } j < k \leq n : x_k = d, \forall \text{ } i \leq k \leq j : x_k = d+1.\\ \text{и}\\
+                \exists \text{ } 1 \leq i \leq j \leq n : \forall \text{ } 1 \leq k < i \text{ или } j < k \leq n : x_k = d+1, \forall \text{ } i \leq k \leq j : x_k = d.
+            \end{gather*}
+            В таком случае граф решений будет выглядеть как множество графов аналогичных множеству решений формы бамбука связанных между собой последовательно по листьям одного с двумя вершинами другого, которые имеют единственный отличный от остальных элемент и при этом не являются листьями.
+            \begin{Graph}
+                \includegraphics[height=500px]{ext/6.2.1.png}
+                \caption{Граф слабоположительных решений при n = 5}
+            \end{Graph}
+            \pagebreak
+            \begin{Graph}
+                \includegraphics[height=500px]{ext/6.2.2.png}
+                \caption{Граф всех решений при n = 5}
+            \end{Graph}
+            \pagebreak
+            
+        \subsection{\large{Вершина с четырьмя листьями}}
+            \begin{gather*}
+                f(x) = \sum_1^4x_i^2 + y^2 - y \sum_1^4 x_i = 1
+            \end{gather*}
+            \begin{gather*}
+                f(x) = \sum_1^4 \frac{1}{4}(2x_i-y)^2 = 1
+            \end{gather*}
+            \begin{gather*}
+                \sum_1^4(2x_i-y)^2 = 4
+            \end{gather*}
+            Требуется рассмотреть два случая:\\
+            \begin{enumerate}
+                \item $\exists \text{ } 1 \leq i \leq 4 : (2x_i-y)^2=4, \text{ } \forall \text{ } 1 \leq j \leq 4, \text{ }j \neq i : (2x_j-y)^2=0$
+                \item $\forall \text{ } 1 \leq j \leq 4: (2x_j-y)^2=1$
+            \end{enumerate}
+            \subsubsection{}
+                Если $(2x_j-y)^2=0, \text{ то } x_j = \frac{y}{2}$.
+                А также, $(2x_i-y)^2=4 \Rightarrow 2x_i = y \pm 2 \Rightarrow x_i = \frac{y}{2} \pm 1$.\\
+                Очевидно, решения существуют только при $y \equiv 0 \bmod 2 $.
+            \subsubsection{}
+                Если $(2x_i-y)^2=1, \text{ то } 2x_i=y\pm1 \Rightarrow x_i = \frac{y \pm 1}{2}$
+                Очевидно, решения существуют только при $y \equiv 1 \bmod 2$.
+            Тогда, граф решений можно разбить на подграфы с одинаковым y. В случае, если y чётное, то решений будет 8, если нечётное то 16. Внутри подграфов соединения не меняются от подграфа к подграфу, между подграфами y и y+1 рёбра проведены только в случаях, когда $\frac{y+1}{2} \pm 1 = \frac{y \pm 1}{2} \Rightarrow \frac{y+1}{2} - 1 = \frac{y-1}{2}$, что верно. То есть рёбра проводятся между вершинами с решениями вида $(y, \frac{y+1}{2}, \frac{y+1}{2}, \frac{y+1}{2}, \frac{y-1}{2}) \text{ и } (y+1, \frac{y+1}{2}, \frac{y+1}{2}, \frac{y+1}{2}, \frac{y+1}{2}-1)$.
+            \begin{Graph}
+                \includegraphics[height=550px]{ext/7.3.1.png}
+                \caption{Граф слабоположительных решений}
+            \end{Graph}
+            \begin{Graph}
+                \includegraphics[height=550px]{ext/7.3.2.png}
+                \caption{Граф всех решений}
+            \end{Graph}
+            \pagebreak
+            
+    \pagebreak      
+    \section{\textsc{Заключение}}
+        После рассмотрения всех графов решений положительных и неотрицательных форм, можно сделать выводы:\\
+        \begin{itemize}
+            \item Во всех таких формах граф всех решений является соединением графа слабоположительных решений и такого же графа, в котором знаки всех переменных были изменены на противоположные. Причём соединение осуществляется путём добавления ребер только между вершинами содержащими единственный ненулевой элемент (1 и -1 соответственно).
+        \item Из предыдущего утверждения следует чётность количества решений и симметричность графа.
+        \end{itemize}
+         Данный вывод может быть применен например при решении задач неявно содержащих в себе квадратичные положительно определенные формы (некоторые формы, не являющиеся положительно определенными формами, преобразуются в положительно определенные с помощью замены переменных).
+    \pagebreak
+
+    \section{\textsc{Материалы}}
+    \begin{itemize} 
+        \item Программа для отрисовки графов, написанная мной на
+        фреймворке QT языка C++: \url{https://github.com/dmokh/Graph}
+        \item Все изображения и LaTeX файлы: \url{https://github.com/dmokh/QuadraticForms}
+        \item \textsc{Список литературы}
+            \begin{itemize}
+                \item
+                \item
+            \end{itemize}
+    \end{itemize}
+    \pagebreak
+
+    \section{\textsc{Приложение}}
+    \hypertarget{table1}{\subsection{\large{Таблица 1}}}
+    \input{tables/1.tex}
+    \newpage
+    \hypertarget{table2}{\subsection{\large{Таблица 2}}}
+    \input{tables/2.tex}
+    \newpage
+    \hypertarget{table3}{\subsection{\large{Таблица 3}}}
+    \input{tables/3.tex}
+    \pagebreak
+\end{document}
