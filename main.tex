@@ -2,7 +2,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx, caption}
-
+\usepackage[utf8]{inputenc}
 \usepackage{array, longtable}
 \usepackage{environ}
 \usepackage{lipsum}
@@ -48,8 +48,10 @@
         Научный руководитель: Антипов Михаил Александрович}
 \date{}
 
+\newcounter{definitions}
 \newenvironment{definition}[0] {
-\textbf{\textsc{Определение:}}
+\stepcounter{definitions}
+\textbf{\textsc{Определение \arabic{definitions}.}} 
 }
 {
 \mbox{}
@@ -65,8 +67,10 @@
   break at=-\baselineskip/0pt
 }
 
+\newcounter{proofs}
 \newenvironment{proof}[1] {
-\noindent\emph{(!) #1} \\ \textbf{Док-во: \\}
+\stepcounter{proofs}
+\noindent\emph{(!) #1} \\ \textbf{Док-во \arabic{proofs}.\\}
 }
 {
 \begin{center}
@@ -83,9 +87,10 @@
   break at=-\baselineskip/0pt
 }
 
-
+\newcounter{lemms}
 \newenvironment{lemma}[1] {
-\textbf{\textsc{Лемма}. (!) #1 \\  Док-во: \\}
+\stepcounter{lemms}
+\textbf{\textsc{Лемма} \arabic{lemms}. (!) #1 \\  Док-во.\\}
 }
 {
 \begin{center}
@@ -1066,12 +1071,12 @@
 
     \section{\textsc{Приложение}}
     \hypertarget{table1}{\subsection{\large{Таблица 1}}}
-    \input{tables/1.tex}
+    \input{../tables/1.tex}
     \newpage
     \hypertarget{table2}{\subsection{\large{Таблица 2}}}
-    \input{tables/2.tex}
+    \input{../tables/2.tex}
     \newpage
     \hypertarget{table3}{\subsection{\large{Таблица 3}}}
-    \input{tables/3.tex}
+    \input{../tables/3.tex}
     \pagebreak
 \end{document}
